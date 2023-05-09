@@ -6,6 +6,8 @@ import requests
 from pydantic import BaseSettings
 from rich.logging import RichHandler
 import paho.mqtt.client as MQTTClient
+from time import sleep
+from datetime import datetime
 
 
 class Settings(BaseSettings):
@@ -31,20 +33,13 @@ class Settings(BaseSettings):
         env_prefix = 'rpi_temp_'
 
 
-def rpi_temp() -> None:
-    """ Main method for the script """
+def worker() -> None:
+    """ The worker function """
+
     # Get the configuration
     settings = Settings()
 
-    # Configure logging
-    logging.basicConfig(
-        level=settings.logging_level,
-        format='%(name)s: %(message)s',
-        datefmt="[%X]",
-        handlers=[RichHandler()]
-    )
-
-    logger = logging.getLogger('RPI Temp')
+    logger = logging.getLogger('Worker')
     cpu_temp: float | None = None
     gpu_temp: float | None = None
 
@@ -72,6 +67,29 @@ def rpi_temp() -> None:
     mqtt.publish(topic=settings.mqtt_topic_cpu, payload=cpu_temp)
     mqtt.publish(topic=settings.mqtt_topic_gpu, payload=gpu_temp)
     mqtt.disconnect()
+
+
+def rpi_temp() -> None:
+    """ Main method for the script """
+    # Get the configuration
+    settings = Settings()
+
+    # Configure logging
+    logging.basicConfig(
+        level=settings.logging_level,
+        format='%(name)s: %(message)s',
+        datefmt="[%X]",
+        handlers=[RichHandler()]
+    )
+
+    last_minute = 0
+
+    while True:
+        current_time = datetime.now()
+        if current_time.minute != last_minute:
+            last_minute = current_time.minute
+            worker()
+        sleep(5)
 
 
 if __name__ == '__main__':
