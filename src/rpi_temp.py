@@ -5,7 +5,6 @@ from datetime import datetime
 from time import sleep
 
 import paho.mqtt.client as MQTTClient
-import requests
 from pydantic import BaseSettings
 from rich.logging import RichHandler
 
