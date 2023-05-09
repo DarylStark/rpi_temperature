@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/src/rpi_temp.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "envFile": "${workspaceFolder}/.environment/test-environment.env"
+            "envFile": "${workspaceFolder}/.environment/development.env"
         }
     ]
 }
