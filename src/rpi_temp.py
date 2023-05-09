@@ -63,8 +63,8 @@ def worker() -> None:
                          password=settings.mqtt_password)
     mqtt.connect(host=settings.mqtt_broker,
                  port=settings.mqtt_broker_port)
-    mqtt.publish(topic=settings.mqtt_topic_cpu, payload=cpu_temp)
-    mqtt.publish(topic=settings.mqtt_topic_gpu, payload=gpu_temp)
+    mqtt.publish(topic=settings.mqtt_topic_cpu, payload=round(cpu_temp, 1))
+    mqtt.publish(topic=settings.mqtt_topic_gpu, payload=round(gpu_temp, 1))
     mqtt.disconnect()
 
 
